@@ -1,3 +1,3 @@
 from django.shortcuts import render
-
-# Create your views here.
+from reviews.models import Category, Genre, Title
+from rest_framework import mixins, viewsets
