@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Avg
+
 from reviews.models import Category, Genre, Title
 from .filter import TitlesFilter
 from rest_framework import mixins, viewsets, filters
@@ -9,9 +9,13 @@ from api.serializers import (CategorySerializer, GenreSerializer, TitleGetSerial
                              TitlePostSerializer, ReviewsSerializer, CommentsSerializer)
 
 
+
+
+
 class CategoryViewSet():
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
 
 
 class CategoryViewSet(ListCreateViewSet):
@@ -23,14 +27,22 @@ class CategoryViewSet(ListCreateViewSet):
     lookup_field = 'slug'
 
 
-class GenresViewSet(ListCreateViewSet):
+class GenresViewSet():
 
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    lookup_field = 'slug'
+
+    class GenreViewSet(ListCreateViewSet):
+
+        queryset = Genre.objects.all()
+        serializer_class = GenreSerializer
+        permission_classes = (IsAdminOrReadOnly,)
+        filter_backends = (filters.SearchFilter,)
+        search_fields = ('name',)
+        lookup_field = 'slug'
+
+
+
+
+class TitlesViewSet():
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
@@ -43,3 +55,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return TitleGetSerializer
         return TitlePostSerializer
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return TitleReadSerializer
+        return TitleWriteSerializer
