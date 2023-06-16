@@ -13,8 +13,6 @@ class GetTokenSerializer(serializers.ModelSerializer):
         fields = ('username', 'confirmation_code')
 
 
-
-
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.RegexField(
         regex=r'^[\w.@+-]+\Z',
@@ -28,10 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all())],
     )
 
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
+        fields = ('username', 'email', 'first_name',
+                  'last_name', 'bio', 'role')
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -55,4 +53,13 @@ class SignUpSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        if User.objects.filter(
+            email=data['email'],
+            username=data['username'],
+        ).exists():
+            return data
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError('Данный email уже занят.')
+        if User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError('Данное имя уже занято.')
         return data

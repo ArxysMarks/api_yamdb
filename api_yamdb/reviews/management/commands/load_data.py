@@ -3,28 +3,28 @@ import csv
 from django.conf import settings
 from django.core.management import BaseCommand
 
-from reviews.models import Comment, GenreTitle, Review, Category, Genre, Title
+from reviews.models import (Category, Comment, Genre, Review, Title,)
 from users.models import User
 
 TABLES = {
     User: 'users.csv',
-    Category: 'category.csv',
-    Genre: 'genre.csv',
-    Title: 'titles.csv',
-    GenreTitle: 'genre_title',
-    Review: 'review.csv',
     Comment: 'comments.csv',
+    Review: 'review.csv',
+    Category: 'category.csv',
+    Title: 'titles.csv',
+    Genre: 'genre.csv',
+    Review: 'review.csv',
 }
 
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        for model, csv_f in TABLES.items():
+        for model, dir in TABLES.items():
             with open(
-                f'{settings.BASE_DIR}/static/data/{csv_f}',
+                f'{settings.BASE_DIR}/static/data/{dir}',
                 'r',
                 encoding='utf-8',
-            ) as csv_file:
-                reader = csv.DictReader(csv_file)
+            ) as file:
+                reader = csv.DictReader(file)
                 model.objects.bulk_create(model(**data) for data in reader)
         self.stdout.write(self.style.SUCCESS('Все данные загружены'))

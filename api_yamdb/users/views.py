@@ -5,7 +5,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from users.models import User
@@ -19,8 +18,13 @@ from users.serializers import (GetTokenSerializer, SignUpSerializer,
 def get_token(request):
     serializer = GetTokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = get_object_or_404(User, username=serializer.validated_data['username'])
-    if user.is_confirmation_code_valid(serializer.validated_data['confirmation_code']):
+    user = get_object_or_404(User,
+                             username=serializer.validated_data['username']
+                             )
+    if default_token_generator.check_token(
+        user,
+        serializer.validated_data['confirmation_code'],
+    ):
         token = AccessToken.for_user(user)
         return Response({'token': str(token)}, status=status.HTTP_200_OK)
     return Response({'confirmation_code': 'Confirmation code is invalid.'},
@@ -70,8 +74,12 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup(request):
     serializer = SignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = serializer.save()
-
+    username = serializer.validated_data['username']
+    email = serializer.validated_data['email']
+    user, created = User.objects.get_or_create(
+        username=username,
+        email=email,
+    )
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         'Код подтверждения для завершения регистрации:',

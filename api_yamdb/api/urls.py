@@ -3,10 +3,11 @@ from rest_framework import routers
 
 from api.views import (CategoryViewSet, GenresViewSet, TitlesViewSet,
                        ReviewViewSet, CommentViewSet)
+from users.views import UserViewSet, get_token, signup
 
 router = routers.DefaultRouter()
 
-
+router.register('users', UserViewSet, basename='users')
 router.register('titles', TitlesViewSet)
 router.register('genres', GenresViewSet, basename='genres')
 router.register('categories', CategoryViewSet, basename='category')
@@ -23,13 +24,6 @@ router.register(
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-]
-
-urlpatterns = [
-    path('signup/', SignupView.as_view(), name='signup'),
-    path('users/', UsersView.as_view(), name='users'),
-    path('users/me/', UserMeView.as_view(), name='user_me_view'),
-    path('users/create/', UserCreateView.as_view(), name='user_create'),
-    path('users/<str:username>/', UserDetailView.as_view(), name='user_detail'),
-    path('users/', UserListView.as_view(), name='users_list'),
+    path('v1/auth/signup/', signup, name='signup'),
+    path('v1/auth/token/', get_token, name='get_token'),
 ]
