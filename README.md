@@ -87,3 +87,4 @@ http://127.0.0.1:8000/api/v1/titles/
 http://127.0.0.1:8000/redoc/
 ```
 ## Авторы:
+https://github.com/ArxysMarks, https://github.com/ilandroxxy
