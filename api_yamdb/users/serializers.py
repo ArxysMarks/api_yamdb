@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-
 from users.models import User
 
 
@@ -48,7 +47,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         fields = ('username', 'email')
 
     def validate_username(self, value):
-        if value == 'me':
+        if value == 'me' or value == 'Me':
             raise serializers.ValidationError('"me" username is not allowed.')
         return value
 

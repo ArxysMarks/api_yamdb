@@ -1,20 +1,20 @@
-import datetime as dt
+from django.utils import timezone
 from rest_framework import serializers
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('name', 'slug')
+        exclude = ('id',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        exclude = ('id',)
 
 
 class TitleGetSerializer(serializers.ModelSerializer):
@@ -46,7 +46,7 @@ class TitlePostSerializer(serializers.ModelSerializer):
         model = Title
 
     def validate_year(self, value):
-        current_year = dt.date.today().year
+        current_year = timezone.now().year
         if value > current_year:
             raise serializers.ValidationError(
                 'На сайте нельзя публиковать произведения из будущего')
@@ -68,7 +68,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
         model = Review
 
     def validate_score(self, value):
-        if 0 > value > 10:
+        if value > 10 or value < 0:
             raise serializers.ValidationError('Введите оценку от 0 до 10')
         return value
 
