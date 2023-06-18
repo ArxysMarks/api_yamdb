@@ -1,10 +1,11 @@
-from api.serializers import (CategorySerializer, CommentsSerializer,
-                             GenreSerializer, ReviewsSerializer,
-                             TitleGetSerializer, TitlePostSerializer)
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
+from rest_framework import viewsets
+
+from api.serializers import (CategorySerializer, CommentsSerializer,
+                             GenreSerializer, ReviewsSerializer,
+                             TitleGetSerializer, TitlePostSerializer)
 from reviews.models import Category, Genre, Review, Title
 
 from .filter import TitlesFilter
@@ -15,7 +16,6 @@ from .permissions import IsAdminModeratorOwnerOrReadOnly, IsAdminOrReadOnly
 class CategoryViewSet(ListCreateViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
@@ -23,7 +23,6 @@ class CategoryViewSet(ListCreateViewSet):
 class GenresViewSet(ListCreateViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 

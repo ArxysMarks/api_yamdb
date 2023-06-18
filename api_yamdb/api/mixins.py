@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, filters, viewsets
 
 from .permissions import IsAdminOrReadOnly
 
@@ -10,4 +10,4 @@ class ListCreateViewSet(
     viewsets.GenericViewSet,
 ):
     permission_classes = (IsAdminOrReadOnly,)
-    pass
+    filter_backends = (filters.SearchFilter,)
