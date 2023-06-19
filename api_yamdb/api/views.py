@@ -7,7 +7,6 @@ from api.serializers import (CategorySerializer, CommentsSerializer,
                              GenreSerializer, ReviewsSerializer,
                              TitleGetSerializer, TitlePostSerializer)
 from reviews.models import Category, Genre, Review, Title
-
 from .filter import TitlesFilter
 from .mixins import ListCreateViewSet
 from .permissions import IsAdminModeratorOwnerOrReadOnly, IsAdminOrReadOnly
@@ -16,15 +15,11 @@ from .permissions import IsAdminModeratorOwnerOrReadOnly, IsAdminOrReadOnly
 class CategoryViewSet(ListCreateViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class GenresViewSet(ListCreateViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
